@@ -23,13 +23,13 @@ int myFunction(int, int);
 
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // put your setup code here, to run once:
 
   matrix.begin();           // INITIALIZE NeoPixel matrix object (REQUIRED)
   matrix.show();            // Turn OFF all pixels ASAP
-  matrix.setBrightness(120); // Set BRIGHTNESS to about 1/5 (max = 255)
+  matrix.setBrightness(255); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
 // loop() function -- runs repeatedly as long as board is on ---------------

@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
-#include <Arduino_JSON.h>
 
 #define LED_PIN    15
 #define GROUND_PIN 13
@@ -30,9 +29,7 @@ void colorWipe(uint32_t color, int wait);
 void rainbow(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 void theaterChase(uint32_t color, int wait);
-String jsonStr;
 
-JSONVar RGBArray;
 char rgb[3];
 byte r,g,b;
 
@@ -47,7 +44,7 @@ void setup() {
 
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(120); // Set BRIGHTNESS to about 1/5 (max = 255)
+  strip.setBrightness(122000); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
 // loop() function -- runs repeatedly as long as board is on ---------------
