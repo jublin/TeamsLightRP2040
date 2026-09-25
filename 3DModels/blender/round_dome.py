@@ -37,6 +37,18 @@ LED_HOLE_PITCH = 19.0
 LED_PILOT_RADIUS = 1.2645  # measured from the original matrix holder
 BOTTOM_Z = -1.5  # 3 mm service plate; source mounting Z heights stay unchanged
 SERVICE_MOUNTS = [(-22.0, 0.0), (22.0, 0.0), (0.0, -22.0)]
+BASE_INSET_DEPTH = 1.0
+FRAME_SKIRT_CLEARANCE = 0.30
+FRAME_SKIRT_BOTTOM = 0.20
+DOME_LOCK_COUNT = 3
+DOME_LOCK_ANGLE_DEG = 12.0
+DOME_LOCK_TAB_Z = 17.0
+DOME_LOCK_TAB_HEIGHT = 1.40
+DOME_LOCK_TAB_WIDTH = 3.60
+DOME_LOCK_TAB_INNER_RADIUS = 25.70
+DOME_LOCK_TAB_OUTER_RADIUS = 26.70
+DOME_LOCK_SLOT_WIDTH = 4.80
+DOME_LOCK_GROOVE_WIDTH = 10.00
 SEGMENTS = 192
 ARC_STEPS = 64
 COLLECTION = "Round Teams Light"
@@ -141,6 +153,12 @@ def box(name, low, high, collection):
     faces = [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1),
              (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)]
     return mesh_object(name, vertices, faces, collection)
+
+
+def rotated_box(name, low, high, angle_deg, collection):
+    obj = box(name, low, high, collection)
+    obj.rotation_euler[2] = math.radians(angle_deg)
+    return obj
 
 
 def led_bracket(x_sign, y_sign, collection):
@@ -279,6 +297,8 @@ def main():
     inner = OUTER_RADIUS - DOME_WALL
     lip_outer = inner - RADIAL_FIT
     lip_inner = lip_outer - LIP_WALL
+    service_bottom_radius = OUTER_RADIUS - BASE_INSET_DEPTH
+    frame_skirt_inner = service_bottom_radius + FRAME_SKIRT_CLEARANCE
     if not (OUTER_RADIUS >= 28 and LED_MOUNT_Z >= 25 and DOME_WALL > 0 and RADIAL_FIT > 0 and LIP_WALL > 0 and
             DOME_RISE > DOME_WALL and EQUATOR_Z > SEAM_Z + LIP_HEIGHT and
             USB_CENTER_Z - USB_HEIGHT / 2 > BASE_FLOOR and
@@ -310,8 +330,14 @@ def main():
                  (lip_outer, SEAM_Z + LIP_HEIGHT),
                  (lip_inner, SEAM_Z + LIP_HEIGHT), (lip_inner, SEAM_Z),
                  (OUTER_RADIUS - 2.0, SEAM_Z)], collection)
+    skirt = lathe("Inset seam skirt", [(frame_skirt_inner, FRAME_SKIRT_BOTTOM),
+                  (OUTER_RADIUS, FRAME_SKIRT_BOTTOM),
+                  (OUTER_RADIUS, BASE_FLOOR + 0.05),
+                  (frame_skirt_inner, BASE_FLOOR + 0.05)], collection)
+    boolean(base, skirt, "UNION")
     bottom = lathe("Service bottom with Pico cradle", [(0, BOTTOM_Z),
-                   (OUTER_RADIUS, BOTTOM_Z), (OUTER_RADIUS, BASE_FLOOR),
+                   (service_bottom_radius, BOTTOM_Z),
+                   (service_bottom_radius, BASE_FLOOR),
                    (0, BASE_FLOOR)], collection)
     boolean(bottom, cradle, "UNION")
     for sx in (-1, 1):
@@ -334,7 +360,7 @@ def main():
         # boss into the perimeter; no central columns cross the electronics.
         # Extend below the frame before trimming: coincident boss/frame bottoms
         # can produce open edges in Blender's exact boolean solver.
-        boss = lathe("Bottom insert boss", [(0, BASE_FLOOR - 0.2), (4.5, BASE_FLOOR - 0.2),
+        boss = lathe("Bottom insert boss", [(0, BASE_FLOOR + 0.05), (4.5, BASE_FLOOR + 0.05),
                       (4.5, 9), (0, 9)], collection)
         boss.location.x, boss.location.y = x, y
         boolean(base, boss, "UNION")
@@ -363,10 +389,20 @@ def main():
     opening = box("USB tongue clearance", (-7.3, port_inner - 0.3, BASE_FLOOR - 0.5),
                   (7.3, OUTER_RADIUS + 1, 14.3), collection)
     boolean(base, opening, "DIFFERENCE")
-    outline = lathe("Circular outline trim", [(0, BASE_FLOOR),
-                    (OUTER_RADIUS, BASE_FLOOR), (OUTER_RADIUS, LED_MOUNT_Z + 1),
+    outline = lathe("Circular outline trim", [(0, FRAME_SKIRT_BOTTOM - 0.10),
+                    (OUTER_RADIUS, FRAME_SKIRT_BOTTOM - 0.10),
+                    (OUTER_RADIUS, LED_MOUNT_Z + 1),
                     (0, LED_MOUNT_Z + 1)], collection)
     boolean(base, outline, "INTERSECT")
+    for index in range(DOME_LOCK_COUNT):
+        angle = index * 360.0 / DOME_LOCK_COUNT
+        tab = rotated_box("Dome bayonet tab",
+                          (DOME_LOCK_TAB_INNER_RADIUS, -DOME_LOCK_TAB_WIDTH / 2, DOME_LOCK_TAB_Z),
+                          (DOME_LOCK_TAB_OUTER_RADIUS,
+                           DOME_LOCK_TAB_WIDTH / 2,
+                           DOME_LOCK_TAB_Z + DOME_LOCK_TAB_HEIGHT),
+                          angle, collection)
+        boolean(base, tab, "UNION")
 
     outer_arc, inner_arc = [], []
     for i in range(ARC_STEPS + 1):
@@ -379,6 +415,24 @@ def main():
                           z - DOME_WALL * OUTER_RADIUS * s / normal_length))
     dome = lathe("Translucent dome", [(OUTER_RADIUS, SEAM_Z)] + outer_arc +
                  list(reversed(inner_arc)) + [(inner, SEAM_Z)], collection)
+    for index in range(DOME_LOCK_COUNT):
+        angle = index * 360.0 / DOME_LOCK_COUNT
+        entry = rotated_box("Dome bayonet entry slot",
+                            (DOME_LOCK_TAB_INNER_RADIUS - 0.10, -DOME_LOCK_SLOT_WIDTH / 2, SEAM_Z - 0.70),
+                            (DOME_LOCK_TAB_OUTER_RADIUS + 0.20,
+                             DOME_LOCK_SLOT_WIDTH / 2,
+                             DOME_LOCK_TAB_Z + DOME_LOCK_TAB_HEIGHT + 0.20),
+                            angle, collection)
+        boolean(dome, entry, "DIFFERENCE")
+        groove = rotated_box("Dome bayonet locking groove",
+                             (DOME_LOCK_TAB_INNER_RADIUS - 0.10, -DOME_LOCK_GROOVE_WIDTH / 2,
+                              DOME_LOCK_TAB_Z - 0.20),
+                             (DOME_LOCK_TAB_OUTER_RADIUS + 0.20,
+                              DOME_LOCK_GROOVE_WIDTH / 2,
+                              DOME_LOCK_TAB_Z + DOME_LOCK_TAB_HEIGHT + 0.20),
+                             angle - DOME_LOCK_ANGLE_DEG / 2,
+                             collection)
+        boolean(dome, groove, "DIFFERENCE")
     base.data.materials.append(material("Charcoal base", (0.075, 0.09, 0.11)))
     bottom.data.materials.append(base.data.materials[0])
     dome.data.materials.append(material("Diffuser white", (0.84, 0.90, 0.92)))
@@ -386,7 +440,7 @@ def main():
         polygon.use_smooth = abs(polygon.normal.z) < 0.9999
     parts = [base, dome, bottom]
     report = {obj.name: validate(obj) for obj in parts}
-    report["assembly"] = {"revision": 2, "print_count": 3,
+    report["assembly"] = {"revision": 3, "print_count": 3,
                           "diameter_mm": 2 * OUTER_RADIUS,
                           "height_mm": EQUATOR_Z + DOME_RISE - BOTTOM_Z,
                           "led_seating_height_mm": LED_MOUNT_Z,
@@ -394,6 +448,13 @@ def main():
                           "led_pilot_diameter_mm": 2 * LED_PILOT_RADIUS,
                           "pico_translation_y_mm": PICO_SHIFT_Y,
                           "usb_recess_depth_mm": round(OUTER_RADIUS - port_outer, 2),
+                          "service_bottom_radius_mm": service_bottom_radius,
+                          "inset_lip_depth_mm": BASE_INSET_DEPTH,
+                          "inset_lip_height_mm": round(BASE_FLOOR + 0.05 - FRAME_SKIRT_BOTTOM, 2),
+                          "inset_lip_clearance_mm": FRAME_SKIRT_CLEARANCE,
+                          "dome_bayonet_count": DOME_LOCK_COUNT,
+                          "dome_bayonet_lock_angle_deg": DOME_LOCK_ANGLE_DEG,
+                          "dome_bayonet_groove_width_mm": DOME_LOCK_GROOVE_WIDTH,
                           "dome_radial_fit_mm": RADIAL_FIT,
                           "physical_fit_tested": False}
     for obj, name in zip(parts, ("round_frame.stl", "round_dome.stl", "service_bottom.stl")):

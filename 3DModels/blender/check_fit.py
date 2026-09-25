@@ -1,7 +1,8 @@
-"""Check revision 2: load output_v2/round_enclosure.blend before running."""
+"""Check revision 3: load output_v2/round_enclosure.blend before running."""
 import importlib.util
 import itertools
 import json
+import math
 from pathlib import Path
 
 import bpy
@@ -20,6 +21,11 @@ parts = [frame, bottom, dome]
 assert all(obj.name in bpy.context.scene.objects for obj in parts)
 bpy.context.view_layer.update()
 report = {"topology": {obj.name: g.validate(obj) for obj in parts}}
+frame_radius = max(math.hypot(vertex.co.x, vertex.co.y) for vertex in frame.data.vertices)
+bottom_radius = max(math.hypot(vertex.co.x, vertex.co.y) for vertex in bottom.data.vertices)
+inset_step = frame_radius - bottom_radius
+assert inset_step >= g.BASE_INSET_DEPTH - 0.01, inset_step
+report["inset_seam_radial_step_mm"] = round(inset_step, 3)
 
 
 def duplicate(obj):
@@ -43,6 +49,13 @@ def check_empty(first, second, operation, label):
 
 for first, second in itertools.combinations(parts, 2):
     check_empty(first, second, "INTERSECT", f"{first.name} / {second.name} overlap_mm3")
+
+# The entry slots are aligned at zero degrees. At the specified twist angle the
+# tabs must still fit in the shallow internal grooves, with no solid collision.
+locked_dome = duplicate(dome)
+locked_dome.rotation_euler[2] = math.radians(g.DOME_LOCK_ANGLE_DEG)
+check_empty(frame, locked_dome, "INTERSECT", "dome bayonet locked overlap_mm3")
+report["dome_bayonet_lock_fit_verified"] = True
 
 # Only the functional cradle is retained; the square walls are deliberately gone.
 source = g.import_stl(path.parent.parent / "rpi_2040_zero_bottomv2.stl", "source", collection)

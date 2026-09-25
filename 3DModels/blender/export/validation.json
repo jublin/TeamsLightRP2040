@@ -2,17 +2,17 @@
   "Round frame": {
     "non_manifold_edges": 0,
     "connected_components": 1,
-    "volume_mm3": 12175.902,
+    "volume_mm3": 12330.885,
     "size_mm": [
       56.0,
       56.0,
-      23.5
+      24.8
     ]
   },
   "Translucent dome": {
     "non_manifold_edges": 0,
     "connected_components": 1,
-    "volume_mm3": 9308.67,
+    "volume_mm3": 9265.937,
     "size_mm": [
       56.0,
       56.0,
@@ -22,15 +22,15 @@
   "Service bottom with Pico cradle": {
     "non_manifold_edges": 0,
     "connected_components": 1,
-    "volume_mm3": 11787.729,
+    "volume_mm3": 11269.459,
     "size_mm": [
-      56.0,
-      56.0,
+      54.0,
+      54.0,
       15.5
     ]
   },
   "assembly": {
-    "revision": 2,
+    "revision": 3,
     "print_count": 3,
     "diameter_mm": 56.0,
     "height_mm": 49.5,
@@ -39,6 +39,13 @@
     "led_pilot_diameter_mm": 2.529,
     "pico_translation_y_mm": 5.5,
     "usb_recess_depth_mm": 3.5,
+    "service_bottom_radius_mm": 27.0,
+    "inset_lip_depth_mm": 1.0,
+    "inset_lip_height_mm": 1.35,
+    "inset_lip_clearance_mm": 0.3,
+    "dome_bayonet_count": 3,
+    "dome_bayonet_lock_angle_deg": 12.0,
+    "dome_bayonet_groove_width_mm": 10.0,
     "dome_radial_fit_mm": 0.3,
     "physical_fit_tested": false
   }

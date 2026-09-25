@@ -136,8 +136,9 @@ SDK used by this PlatformIO project. `LED_PIN` (default 15) and `LED_COUNT`
 The [Blender enclosure generator](3DModels/blender/README.md) creates a 56 mm
 diameter, 49.5 mm tall round enclosure with integrated LED mounts, a removable
 Pico service bottom, and a dome. It replaces the square printed holders while
-retaining the electronics' mounting interfaces. The script, generated Blender
-assembly, STL files, and previews are included.
+retaining the electronics' mounting interfaces. The frame has a stepped inset
+seam and the dome uses a hidden three-tab bayonet lock. The script, generated
+Blender assembly, STL files, and previews are included.
 
 The LED Matrix I have used can be found on [AliExpress](https://www.aliexpress.us/item/3256806834627585.html) (No affiliate link)
 

@@ -3,27 +3,27 @@
     "Round frame": {
       "non_manifold_edges": 0,
       "connected_components": 1,
-      "volume_mm3": 12175.902,
+      "volume_mm3": 12330.885,
       "size_mm": [
         56.0,
         56.0,
-        23.5
+        24.8
       ]
     },
     "Service bottom with Pico cradle": {
       "non_manifold_edges": 0,
       "connected_components": 1,
-      "volume_mm3": 11787.729,
+      "volume_mm3": 11269.459,
       "size_mm": [
-        56.0,
-        56.0,
+        54.0,
+        54.0,
         15.5
       ]
     },
     "Translucent dome": {
       "non_manifold_edges": 0,
       "connected_components": 1,
-      "volume_mm3": 9308.67,
+      "volume_mm3": 9265.937,
       "size_mm": [
         56.0,
         56.0,
@@ -31,9 +31,12 @@
       ]
     }
   },
+  "inset_seam_radial_step_mm": 1.0,
   "Round frame / Service bottom with Pico cradle overlap_mm3": 0.0,
   "Round frame / Translucent dome overlap_mm3": 0.0,
   "Service bottom with Pico cradle / Translucent dome overlap_mm3": 0.0,
+  "dome bayonet locked overlap_mm3": 0.0,
+  "dome_bayonet_lock_fit_verified": true,
   "functional_cradle_removed_mm3": 0.0,
   "Pico PCB envelope / Round frame overlap_mm3": 0.0,
   "Pico PCB envelope / Service bottom with Pico cradle overlap_mm3": 0.0,

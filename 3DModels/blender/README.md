@@ -1,4 +1,4 @@
-# Round enclosure, revision 2
+# Round enclosure, revision 3
 
 **56 mm diameter × 49.5 mm high.** This revision mounts the electronics directly
 in a purpose-built round enclosure. The original square shells and matrix tray
@@ -22,6 +22,12 @@ are not installed. The original STL files remain unmodified.
   center hole, and the electronics can be accessed from underneath.
 - The bottom uses three peripheral M3 insert bosses. These hold the new enclosure
   together; they do not obstruct the Pico or LED mounting pattern.
+- The frame now has a 1 mm inset seam skirt. The service bottom is 1 mm smaller
+  than the frame and nests behind that skirt, hiding the small screw-tension gap
+  and keeping the parts concentric.
+- The dome uses three hidden bayonet tabs. Align the entry slots, press the dome
+  down, then twist it 12 degrees counter-clockwise viewed from above to lock it. The slots and grooves are
+  cut into the inside of the rim, leaving the outside surface uninterrupted.
 
 The three new prints are a **round frame**, **service bottom with Pico cradle**,
 and **translucent dome**. The old printed holders and square diffuser are replaced.
@@ -50,7 +56,7 @@ Current output is in **`output_v2/`**:
 - `fit_checks.json`: collision, retention, insertion-clearance and mounting checks.
 
 The `output/` folder contains the superseded first-pass model for comparison.
-Do not mix its printed parts with revision 2. Each STL is independently placed
+Do not mix its printed parts with revision 3. Each STL is independently placed
 on Z=0 for slicing; use the Blender file to inspect the assembled positions.
 
 Running the generator replaces only its named collection and generated files.
@@ -74,11 +80,14 @@ screws; obtain matching screws if necessary.
 4. Lay the LED board onto the four seats and use the original short self-tapping
    screws. Pilot depth is 4 mm; limit screw projection below the PCB to 3 mm.
    Arrange the wire slack in the open center, away from the screw seats.
-5. Slide the dome over the frame's 4 mm locating lip. It rests at Z=16 mm.
+5. Align the three dome entry slots with the three frame tabs. Press the dome
+   down until its rim seats at Z=16 mm, then twist it 12 degrees
+   counter-clockwise viewed from above. To remove it, twist clockwise back to
+   the entry-slot position and lift.
 
-The dome is a removable slip cover with 0.30 mm radial clearance. It has no
-positive latch; lift the device by the base. The bottom, frame and dome can each
-be removed for servicing.
+The dome is a removable bayonet cover with 0.30 mm radial clearance. Its lock is
+internal, so there are no exterior clips or holes. Lift the device by the base;
+the bottom, frame and dome can each be removed for servicing.
 
 ## Printing and fit limits
 
@@ -89,7 +98,8 @@ optical diffusion. A small joint test print can help tune `RADIAL_FIT`.
 
 The fit checks verify that the three printed pieces do not overlap, the retained
 Pico cradle has not lost material, and the four LED seats and pilot depths are
-correct. They also check a sampled service-bottom insertion path with the PCB,
+correct. They also check the base/frame seam, the three bayonet tabs at the
+12-degree locked position, and a sampled service-bottom insertion path with the PCB,
 projecting USB socket and JST allowances, and assumed electronics
 clearance envelopes: 18.3 × 23.5 × 1.59 mm for the Pico PCB above the supports,
 17 × 8 × 9 mm for JST connector space, and 35 × 35 × 4 mm above the LED seats.
