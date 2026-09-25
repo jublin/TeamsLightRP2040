@@ -11,8 +11,8 @@ Code for the TeamsStatusLight WPF application [Here](https://github.com/jublin/T
 The firmware supports configurable colors for `available`, `busy`, `away`, `dnd`
 (do not disturb), and `offline`. Each preset can be steady, blink, or pulse, with
 an adjustable period. Global brightness, lights-off mode, temporary notifications,
-and an optional stale-connection timeout are built in. The companion application
-can configure these using the protocol below; its UI is separate future work.
+and an optional stale-connection timeout are built in. The portable Status Light
+companion configures this firmware over the USB protocol below.
 
 Defaults are green, red, amber, purple, and black respectively, all steady.
 Brightness starts at 255 to preserve existing RGB behavior; try 64 for a dimmer
@@ -130,6 +130,14 @@ SDK used by this PlatformIO project. `LED_PIN` (default 15) and `LED_COUNT`
 (default 16) can be overridden at build time for different wiring.
 
 ## Parts needed:
+
+### Round domed enclosure option
+
+The [Blender enclosure generator](3DModels/blender/README.md) creates a 56 mm
+diameter, 49.5 mm tall round enclosure with integrated LED mounts, a removable
+Pico service bottom, and a dome. It replaces the square printed holders while
+retaining the electronics' mounting interfaces. The script, generated Blender
+assembly, STL files, and previews are included.
 
 The LED Matrix I have used can be found on [AliExpress](https://www.aliexpress.us/item/3256806834627585.html) (No affiliate link)
 
